@@ -1,4 +1,3 @@
-// vue-chat/src/stores/chatStore.ts
 import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
 
@@ -8,13 +7,13 @@ export interface Message {
 }
 
 export const useChatStore = defineStore('chat', () => {
-  // PERSISTENCIA
-  // Intentamos recuperar el historial guardado, si no hay, empezamos vacío
   const savedMessages = localStorage.getItem('chat_messages');
   const messages = ref<Message[]>(savedMessages ? JSON.parse(savedMessages) : []);
   
   const isConnected = ref<boolean>(false);
-  const currentUser = ref<string>('Bryzon');
+  
+  const currentUser = ref<string>(`Invitado_${Math.floor(Math.random() * 1000)}`);
+  const hasJoined = ref<boolean>(false);
 
   watch(messages, (newMessages) => {
     localStorage.setItem('chat_messages', JSON.stringify(newMessages));
@@ -28,11 +27,22 @@ export const useChatStore = defineStore('chat', () => {
     isConnected.value = status;
   };
 
+  const setCurrentUser = (name: string) => {
+    currentUser.value = name;
+  };
+
+  const setHasJoined = (status: boolean) => {
+    hasJoined.value = status;
+  };
+
   return {
     messages,
     isConnected,
     currentUser,
+    hasJoined,
     addMessage,
-    setConnectionStatus
+    setConnectionStatus,
+    setCurrentUser,
+    setHasJoined
   };
 });

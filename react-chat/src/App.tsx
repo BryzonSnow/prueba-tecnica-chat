@@ -8,10 +8,13 @@ function App() {
   const messages = useChatStore((state) => state.messages);
   const isConnected = useChatStore((state) => state.isConnected);
   const currentUser = useChatStore((state) => state.currentUser);
+  const hasJoined = useChatStore((state) => state.hasJoined);
 
   const [newMessage, setNewMessage] = useState('');
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const setCurrentUser = useChatStore((state) => state.setCurrentUser);
+  const setHasJoined = useChatStore((state) => state.setHasJoined);
 
   // CICLO DE VIDA 
   useEffect(() => {
@@ -45,6 +48,34 @@ function App() {
     }
   };
 
+  if (!hasJoined) {
+    return (
+      <div className="join-screen">
+        <div className="join-card">
+          <h2>¡Bienvenido al Chat!</h2>
+          <p>Ingresa tu nombre o usa el generado al azar:</p>
+          
+          <img 
+            src={`https://api.dicebear.com/7.x/identicon/svg?seed=${currentUser}`} 
+            alt="Tu Avatar" 
+            className="avatar-preview"
+          />
+          
+          <input 
+            type="text"
+            value={currentUser}
+            onChange={(e) => setCurrentUser(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && setHasJoined(true)}
+            className="join-input"
+          />
+          <button onClick={() => setHasJoined(true)} className="join-button">
+            Entrar al Chat
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <main className="chat-container">
       <h1>Chat Realtime (React)</h1>
@@ -60,25 +91,39 @@ function App() {
       <hr />
 
       <div className="messages-container">
-        {messages.map((msg, index) => (
-          <div key={index} className="message-row">
-            {}
-            <img
-              src={`https://api.dicebear.com/7.x/identicon/svg?seed=${msg.user}`}
-              alt={`Avatar de ${msg.user}`}
-              className="avatar"
-            />
-            <div className="message-content">
-              <strong>{msg.user}:</strong> {msg.text}
+{messages.map((msg, index) => {
+          // Determinamos si el mensaje es del usuario actual
+          const isMine = msg.user === currentUser;
+          
+          return (
+            <div key={index} className={`message-row ${isMine ? 'mine' : 'other'}`}>
+              {!isMine && (
+                <img
+                  src={`https://api.dicebear.com/7.x/identicon/svg?seed=${msg.user}`}
+                  alt="Avatar"
+                  className="avatar"
+                />
+              )}
+              
+              <div className="message-content">
+                <strong>{isMine ? 'Tú' : msg.user}:</strong> {msg.text}
+              </div>
+
+              {isMine && (
+                <img
+                  src={`https://api.dicebear.com/7.x/identicon/svg?seed=${msg.user}`}
+                  alt="Avatar"
+                  className="avatar"
+                />
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
         {messages.length === 0 && (
           <div className="empty-state">
             <em>No hay mensajes aún. ¡Escribe el primero!</em>
           </div>
         )}
-        {}
         <div ref={messagesEndRef} />
       </div>
 
