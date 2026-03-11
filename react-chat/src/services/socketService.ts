@@ -8,7 +8,8 @@ class SocketService {
   public connect() {
     if (this.socket) return; 
 
-    this.socket = io('http://localhost:3001');
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    this.socket = io(backendUrl);
 
     this.socket.on('connect', () => {
       console.log('React: Conectado al servidor de WebSockets');

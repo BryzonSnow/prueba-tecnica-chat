@@ -1,18 +1,18 @@
 // server/index.js
-const io = require("socket.io")(3001, {
+const PORT = process.env.PORT || 3001;
+
+const io = require("socket.io")(PORT, {
   cors: { 
-    origin: "*", // conexion
+    origin: "*", 
   }
 });
 
-console.log("Servidor Socket.io corriendo en el puerto 3001...");
+console.log(`Servidor Socket.io corriendo en el puerto ${PORT}...`);
 
 io.on("connection", (socket) => {
   console.log("Un usuario se ha conectado:", socket.id);
 
   socket.on("message", (msg) => {
-    console.log("Mensaje recibido:", msg);
-    // todos los clientes conectados
     io.emit("message", msg);
   });
 

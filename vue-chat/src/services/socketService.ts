@@ -6,8 +6,8 @@ class SocketService {
   private socket: Socket | null = null;
 
   public connect() {
-    // Nos conectamos al servidor que dejamos corriendo en el puerto 3001
-    this.socket = io('http://localhost:3001');
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    this.socket = io(backendUrl);
 
     // Instanciamos el store de Pinia
     const chatStore = useChatStore();
