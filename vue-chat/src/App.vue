@@ -7,7 +7,7 @@ const chatStore = useChatStore();
 const newMessage = ref('');
 const messagesContainer = ref<HTMLElement | null>(null);
 
-// --- BONUS: SCROLL AUTOMÁTICO ---
+// SCROLL AUTOMÁTICO
 watch(() => chatStore.messages.length, async () => {
   await nextTick();
   if (messagesContainer.value) {
@@ -15,7 +15,7 @@ watch(() => chatStore.messages.length, async () => {
   }
 });
 
-// --- CICLO DE VIDA ---
+// CICLO DE VIDA
 onMounted(() => {
   socketService.connect();
   if (messagesContainer.value) {
@@ -27,7 +27,7 @@ onUnmounted(() => {
   socketService.disconnect();
 });
 
-// --- MÉTODOS ---
+// METODOS
 const handleSend = () => {
   if (newMessage.value.trim() === '') return;
 
